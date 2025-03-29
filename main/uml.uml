@@ -1,0 +1,141 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam classFontStyle bold
+skinparam classBackgroundColor LightGoldenRodYellow
+skinparam classBorderColor Black
+
+class Config {
+  +WINDOW_WIDTH: int
+  +WINDOW_HEIGHT: int
+  +WINDOW_BACKGROUND_COLOR: tuple
+  +COLONY_COLOR: tuple
+  +COLONY_RADIUS: int
+  +ANT_COLOR: tuple
+  +ANT_WITH_FOOD_COLOR: tuple
+  +ANT_POPULATION_SIZE: int
+  +ANT_SCOUT_COLOR_POPULATION_SIZE: int
+  +ANT_SCOUT_WITH_FOOD_COLOR: tuple
+  +ANT_SCOUT_COLOR: tuple
+  +FOOD_AVAILABLE: int
+  +FOOD_STORAGE_CAPACITY: int
+  +PHEROMONE_COLOR: tuple
+  +PHEROMONE_DECAY_RATE: float
+  +AG_MUTATION_RATE: float
+  +AG_MUTATION_FORCE: float
+  +AG_FOOD_COLLECT_TO_EVOLVE: int
+  +AG_ELITE_PERCENTAGE: float
+  +AG_TOURNAMENT_SIZE: int
+  +ANT_INITIAL_SPEED: float
+  +ANT_MAX_SPEED: float
+  +ANT_INITIAL_PHEROMONE_SENSE: float
+  +ANT_MAX_PHEROMONE_SENSE: float
+  +ANT_INITIAL_PHEROMONE_STRENGTH: float
+  +ANT_MAX_PHEROMONE_STRENGTH: float
+  +FPS: int
+}
+
+class Pheromone {
+  -position: tuple
+  -intensity: float
+  +__init__(position: tuple, intensity: float)
+  +gradual_decay(rate: float): void
+  +is_active(): bool
+}
+
+class FoodSource {
+  -position: tuple
+  -stock: int
+  +__init__(position: tuple, stock: int)
+  +decrement_food_stock(): bool
+  +get_color(): tuple
+  +get_size(): int
+}
+
+class Ant {
+  -x: float
+  -y: float
+  -has_food: bool
+  -exploring: bool
+  -food_return_route: list
+  -ag_speed: float
+  -ag_pheromone_detection_range: float
+  -ag_pheromone_strength: float
+  -fitness_food_collected: int
+  -fitness_steps_count: int
+  -fitness_score: float
+  +__init__(x: float, y: float)
+  +position(): tuple
+  +calculate_fitness(): float
+  +move(environment: Environment): bool
+  +direction_exploration(environment: Environment): tuple
+  +check_for_food(environment: Environment): void
+  +deposit_food(environment: Environment): void
+  +get_color(): tuple
+  +get_display_position(): tuple
+  +mutate(): void
+}
+
+class Ant_Scout {
+  +__init__(x: float, y: float)
+  +get_color(): tuple
+}
+
+class Colony {
+  -x: float
+  -y: float
+  -food_collected: int
+  -ants: list
+  -ants_scout: list
+  -generation: int
+  +__init__(x: float, y: float)
+  +position(): tuple
+  +create_ants(num_ants: int): void
+  +initialize_ants(num_ants: int, is_scout: bool): list
+  +evolve_ants(): void
+  +get_ant_fitness(ant: Ant): float
+  +evolve_population(): void
+  +tournament(): tuple
+  +crossover_ants(parent1: Ant, parent2: Ant): Ant
+  +select_elite_ants(): list
+  +select_parent(): Ant
+  +print_statistics(): void
+}
+
+class Environment {
+  -colony: Colony
+  -food_sources: list
+  -pheromones: list
+  -food_delivery_count: int
+  -total_food_collected: int
+  +__init__()
+  +create_random_food_sources(num_food: int): void
+  +update(): void
+  +update_pheromones(): void
+  +find_nearest_pheromone(position: tuple, max_distance: float): Pheromone
+  +find_nearest_food(position: tuple): FoodSource
+  +take_food(food_source: FoodSource): bool
+  +add_pheromone(position: tuple, strength: float): void
+}
+
+class Renderer {
+  -screen: pygame.Surface
+  -clock: pygame.time.Clock
+  -font: pygame.font.Font
+  +__init__()
+  +render(environment: Environment): void
+  +render_info(environment: Environment): void
+  +check_quit(): bool
+}
+
+class Simulation {
+  -environment: Environment
+  -renderer: Renderer
+  -running: bool
+  +__init__()
+  +run(): void
+}
+
+' Apenas a relação de herança
+Ant_Scout --|> Ant
+
+@enduml
